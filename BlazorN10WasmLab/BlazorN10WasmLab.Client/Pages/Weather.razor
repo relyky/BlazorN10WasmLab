@@ -1,20 +1,29 @@
-﻿@page "/weather"
+@page "/weather"
+@using BlazorN10WasmLab.Shared.Contracts
+@* prerender: false — IWeatherService 僅在 Client WASM DI 中注冊，SSR 端無法解析 *@
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@inject IWeatherService WeatherSvc
 
 <PageTitle>Weather</PageTitle>
 
 <h1>Weather</h1>
 
-<p>This component demonstrates showing data.</p>
+<p>This component demonstrates showing data via gRPC-Web.</p>
 
-<button class="btn btn-primary mb-3" @onclick="LoadForecastsAsync" disabled="@(forecasts == null)">
-    刷新
-</button>
+<div class="mb-3 d-flex gap-2">
+    <button class="btn btn-primary" @onclick="LoadUnaryAsync" disabled="@isLoading">
+        刷新（Unary）
+    </button>
+    <button class="btn btn-secondary" @onclick="LoadStreamingAsync" disabled="@isLoading">
+        刷新（Streaming）
+    </button>
+</div>
 
-@if (forecasts == null)
+@if (isLoading && forecasts == null)
 {
     <p><em>Loading...</em></p>
 }
-else
+else if (forecasts != null)
 {
     <table class="table">
         <thead>
@@ -40,31 +49,35 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private List<WeatherForecast>? forecasts;
+    private bool isLoading;
 
     protected override async Task OnInitializedAsync()
-        => await LoadForecastsAsync();
+        => await LoadUnaryAsync();
 
-    private async Task LoadForecastsAsync()
+    private async Task LoadUnaryAsync()
     {
+        isLoading = true;
         forecasts = null;
-        await Task.Delay(500);
+        StateHasChanged();
 
-        var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
-        forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        {
-            Date = startDate.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
-        }).ToArray();
+        var reply = await WeatherSvc.GetForecastsAsync();
+        forecasts = reply.Forecasts;
+        isLoading = false;
     }
 
-    private class WeatherForecast
+    private async Task LoadStreamingAsync()
     {
-        public DateOnly Date { get; set; }
-        public int TemperatureC { get; set; }
-        public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        isLoading = true;
+        forecasts = [];
+        StateHasChanged();
+
+        await foreach (var forecast in WeatherSvc.StreamForecastsAsync())
+        {
+            forecasts.Add(forecast);
+            StateHasChanged();
+        }
+
+        isLoading = false;
     }
 }

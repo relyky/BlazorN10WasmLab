@@ -8,9 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.80.0" />
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.80.0" />
+    <PackageReference Include="protobuf-net.Grpc.AspNetCore" Version="1.2.2" />
     <ProjectReference Include="..\..\BlazorN10WasmLab.ServiceDefaults\BlazorN10WasmLab.ServiceDefaults.csproj" />
     <ProjectReference Include="..\BlazorN10WasmLab.Client\BlazorN10WasmLab.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\BlazorN10WasmLab.Shared\BlazorN10WasmLab.Shared.csproj" />
   </ItemGroup>
 
 </Project>
