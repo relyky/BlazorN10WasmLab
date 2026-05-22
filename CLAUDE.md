@@ -99,3 +99,26 @@ Invoke-WebRequest -Uri "https://github.com/tailwindlabs/tailwindcss/releases/lat
 - **Input CSS**：`BlazorN10WasmLab/Styles/app.css`（含 `@import "tailwindcss"` 與 Blazor 特定樣式）
 - **Output CSS**：`BlazorN10WasmLab/wwwroot/app.css`（由 MSBuild target 自動產生，不手動編輯）
 - `dotnet build` 時自動執行；Release build 加 `--minify`
+
+### CSS 架構（三層）
+
+| 層級 | 位置 | 用途 |
+|---|---|---|
+| **全域樣式** | `BlazorN10WasmLab/Styles/app.css` | Blazor 特定樣式（`.blazor-error-boundary`、`.valid.modified` 等），勿放一般 UI 樣式 |
+| **元件 scoped CSS** | `ComponentName.razor.css` | 無法簡潔用 utility 表達的版面、`::deep` 選擇器、SVG icon 背景、媒體查詢 |
+| **Tailwind utility** | 直接寫在 `.razor` HTML 上 | 字體、顏色、間距、顯示模式等 — 優先用這層 |
+
+### 使用慣例
+
+**Tailwind v4 base reset 將所有標題字體大小重設為 `inherit`**，必須明確加 class：
+
+```razor
+<h1 class="text-3xl font-bold mb-2">標題</h1>
+<h2 class="text-xl font-semibold mb-1">次標題</h2>
+<p class="text-base text-gray-500">內文</p>
+```
+
+**優先順序原則**：
+1. 先用 Tailwind utility class 直接修飾元素
+2. 需要 `::deep`、CSS selector 組合、或超過 5 個 utility 時，改用 scoped CSS
+3. 只有 Blazor 框架相關樣式才寫進 `Styles/app.css`
