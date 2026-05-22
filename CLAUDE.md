@@ -96,15 +96,15 @@ Invoke-WebRequest -Uri "https://github.com/tailwindlabs/tailwindcss/releases/lat
 
 ### Tailwind 建置流程
 
-- **Input CSS**：`BlazorN10WasmLab/Styles/app.css`（含 `@import "tailwindcss"` 與 Blazor 特定樣式）
-- **Output CSS**：`BlazorN10WasmLab/wwwroot/app.css`（由 MSBuild target 自動產生，不手動編輯）
+- **Input CSS**：`BlazorN10WasmLab/BlazorN10WasmLab/Styles/app.css`（含 `@import "tailwindcss"` 與 Blazor 特定樣式）
+- **Output CSS**：`BlazorN10WasmLab/BlazorN10WasmLab/wwwroot/app.css`（由 MSBuild target 自動產生，不手動編輯）
 - `dotnet build` 時自動執行；Release build 加 `--minify`
 
 ### CSS 架構（三層）
 
 | 層級 | 位置 | 用途 |
 |---|---|---|
-| **全域樣式** | `BlazorN10WasmLab/Styles/app.css` | Blazor 特定樣式（`.blazor-error-boundary`、`.valid.modified` 等），勿放一般 UI 樣式 |
+| **全域樣式** | `BlazorN10WasmLab/BlazorN10WasmLab/Styles/app.css` | Blazor 特定樣式（`.blazor-error-boundary`、`.valid.modified` 等），勿放一般 UI 樣式 |
 | **元件 scoped CSS** | `ComponentName.razor.css` | 無法簡潔用 utility 表達的版面、`::deep` 選擇器、SVG icon 背景、媒體查詢 |
 | **Tailwind utility** | 直接寫在 `.razor` HTML 上 | 字體、顏色、間距、顯示模式等 — 優先用這層 |
 
