@@ -1,27 +1,47 @@
-<div class="top-row">
-    <div class="brand-title">BlazorN10WasmLab</div>
+<div class="flex flex-col py-2">
+    <div class="px-3 pt-2 pb-1">
+        <button class="flex items-center justify-between w-full px-2 py-2 text-sm font-semibold text-gray-600 rounded hover:bg-gray-100"
+                @onclick="ToggleGroup">
+            <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                </svg>
+                <span>功能展示</span>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform @(_groupOpen ? "" : "-rotate-90")"
+                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </button>
+
+        @if (_groupOpen)
+        {
+            <div class="mt-1 ml-2 flex flex-col gap-0.5">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5Z"/>
+                    </svg>
+                    首頁
+                </NavLink>
+                <NavLink class="nav-link" href="counter">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
+                    </svg>
+                    Counter
+                </NavLink>
+                <NavLink class="nav-link" href="weather">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M6 1a1 1 0 0 1 1-1h2a1 1 0 0 1 0 2H7a1 1 0 0 1-1-1zm.71 7.29a1 1 0 0 0-1.42 1.42l.72.71H3a1 1 0 0 0 0 2h3.01l-.72.71a1 1 0 1 0 1.42 1.42l2.12-2.12a1 1 0 0 0 0-1.42L7.71 8.29zM13 3a1 1 0 1 0 0 2 3 3 0 1 1 0 6H7a1 1 0 1 0 0 2h6a5 5 0 1 0 0-10z"/>
+                    </svg>
+                    Weather
+                </NavLink>
+            </div>
+        }
+    </div>
 </div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+@code {
+    private bool _groupOpen = true;
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav-list">
-        <div class="nav-item">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+    private void ToggleGroup() => _groupOpen = !_groupOpen;
+}
