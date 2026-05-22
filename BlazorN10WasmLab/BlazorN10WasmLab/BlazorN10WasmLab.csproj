@@ -20,4 +20,19 @@
     <ProjectReference Include="..\..\BlazorN10WasmLab.Shared\BlazorN10WasmLab.Shared.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <TailwindCli>$(MSBuildThisFileDirectory)..\..\.tools\tailwindcss.exe</TailwindCli>
+    <TailwindArgs>-i Styles\app.css -o wwwroot\app.css</TailwindArgs>
+    <TailwindArgs Condition="'$(Configuration)' == 'Release'">$(TailwindArgs) --minify</TailwindArgs>
+  </PropertyGroup>
+
+  <Target Name="TailwindCheck" BeforeTargets="TailwindBuild">
+    <Error Condition="!Exists('$(TailwindCli)')"
+           Text="Tailwind CSS CLI not found at $(TailwindCli). Please download it: Invoke-WebRequest -Uri 'https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-windows-x64.exe' -OutFile '.tools\tailwindcss.exe'" />
+  </Target>
+
+  <Target Name="TailwindBuild" BeforeTargets="Build">
+    <Exec Command="&quot;$(TailwindCli)&quot; $(TailwindArgs)" />
+  </Target>
+
 </Project>

@@ -74,3 +74,28 @@ The entire app uses **`InteractiveWebAssembly`** render mode globally (set in `A
 ### GrpcWebText 模式
 
 Client 固定使用 `GrpcWebMode.GrpcWebText`（base64）確保跨瀏覽器相容性。服務間無請求參數的方法使用 `GrpcEmpty`（0-byte protobuf，與 server 端 `ProtoBuf.Grpc.Internal.Empty` wire-compatible）。
+
+`GrpcEmpty` 定義在 `BlazorN10WasmLab.Client/Services/WeatherServiceClient.cs` 底部，新增服務時直接引用同一個型別，無需重複定義。
+
+### Server-side Service 位置
+
+Server 實作類別放在 `BlazorN10WasmLab/Services/` 目錄，namespace 為 `BlazorN10WasmLab.Services`（非 `Components`）。
+
+## Tailwind CSS
+
+CSS 框架使用 **Tailwind CSS v4**，透過 standalone CLI（無 npm）整合至 MSBuild。
+
+### Tailwind CLI 下載（首次設定）
+
+CLI 執行檔不納入 git，需手動下載至 `.tools/tailwindcss.exe`：
+
+```powershell
+# 下載 Tailwind CSS v4 standalone CLI (Windows x64)
+Invoke-WebRequest -Uri "https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-windows-x64.exe" -OutFile ".tools\tailwindcss.exe"
+```
+
+### Tailwind 建置流程
+
+- **Input CSS**：`BlazorN10WasmLab/Styles/app.css`（含 `@import "tailwindcss"` 與 Blazor 特定樣式）
+- **Output CSS**：`BlazorN10WasmLab/wwwroot/app.css`（由 MSBuild target 自動產生，不手動編輯）
+- `dotnet build` 時自動執行；Release build 加 `--minify`

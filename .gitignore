@@ -402,3 +402,6 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 settings.local.json
+
+# Tailwind CSS standalone CLI (download manually, not tracked in git)
+.tools/*.exe
