@@ -2,11 +2,11 @@
 
 <PageTitle>Counter</PageTitle>
 
-<h1 class="text-4xl font-bold text-emerald-500 my-4">Counter</h1>
+<h1 class="text-4xl font-bold text-[var(--color-primary)] my-4">Counter</h1>
 
-<p role="status">Current count: <span style="font-size:3em;color:skyblue;font-weight:bold">@currentCount</span></p>
+<p role="status">Current count: <span class="text-5xl font-bold text-sky-300">@currentCount</span></p>
 
-<button style="background-color:var(--color-primary);color:var(--color-primary-fg);border:none;border-radius:6px;padding:8px 20px;font-weight:500;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.2)" @onclick="IncrementCount">Click me</button>
+<button class="bg-[var(--color-primary)] text-[var(--color-primary-fg)] rounded-md px-5 py-2 font-medium cursor-pointer shadow-sm" @onclick="IncrementCount">Click me</button>
 
 @code {
     private int currentCount = 0;
