@@ -1,16 +1,25 @@
 @inherits LayoutComponentBase
+@inject IJSRuntime JS
 
 <div class="flex flex-col h-screen">
     <header class="flex items-center shrink-0 bg-primary text-primary-fg px-4 py-3 shadow-md">
-        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-white text-primary font-bold text-lg mr-3 shrink-0">B</div>
+        <button type="button" aria-label="Toggle navigation"
+                class="flex items-center justify-center w-10 h-10 rounded-full bg-white text-primary font-bold text-lg mr-3 shrink-0 cursor-pointer hover:opacity-90 transition-opacity"
+                @onclick="ToggleSidebar">B</button>
         <span class="text-xl font-bold flex-1">BlazorN10WasmLab</span>
         <span class="text-sm opacity-75 hidden sm:block">Blazor .NET 10 WASM Lab</span>
     </header>
 
     <div class="flex flex-1 overflow-hidden">
-        <nav class="w-60 shrink-0 bg-white border-r border-gray-200 overflow-y-auto">
-            <NavMenu />
+        @if (_sidebarOpen)
+        {
+            <div class="fixed inset-0 z-30 bg-black/50 md:hidden" @onclick="CloseSidebar"></div>
+        }
+
+        <nav class="@SidebarClass">
+            <NavMenu OnNavigated="CloseSidebarIfMobile" />
         </nav>
+
         <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
             @Body
         </main>
@@ -22,3 +31,35 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+@code {
+    private bool _sidebarOpen = false;
+
+    private string SidebarClass => _sidebarOpen
+        ? "fixed top-16 bottom-0 left-0 z-40 w-60 bg-white border-r border-gray-200 overflow-y-auto shadow-lg transition-transform duration-200 translate-x-0 md:static md:z-auto md:shadow-none md:shrink-0"
+        : "fixed top-16 bottom-0 left-0 z-40 w-60 bg-white border-r border-gray-200 overflow-y-auto shadow-lg transition-transform duration-200 -translate-x-full md:static md:z-auto md:shadow-none md:shrink-0 md:hidden";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var width = await JS.InvokeAsync<int>("eval", "window.innerWidth");
+            _sidebarOpen = width >= 768;
+            StateHasChanged();
+        }
+    }
+
+    private void ToggleSidebar() => _sidebarOpen = !_sidebarOpen;
+
+    private void CloseSidebar() => _sidebarOpen = false;
+
+    private async Task CloseSidebarIfMobile()
+    {
+        var width = await JS.InvokeAsync<int>("eval", "window.innerWidth");
+        if (width < 768)
+        {
+            _sidebarOpen = false;
+            StateHasChanged();
+        }
+    }
+}

@@ -1,5 +1,5 @@
 ### Requirement: 頂部品牌 Header 常駐顯示
-應用程式 SHALL 在所有頁面頂部顯示一個固定高度的品牌 Header Bar，包含應用名稱與品牌識別色（primary color `#c2185b`）。
+應用程式 SHALL 在所有頁面頂部顯示一個固定高度的品牌 Header Bar，包含應用名稱與品牌識別色（primary color `#c2185b`）。Header 左側的 Logo 圓圈 SHALL 為可點擊按鈕，用於切換側邊欄展開/收合狀態。
 
 #### Scenario: Header 出現在所有頁面
 - **WHEN** 使用者瀏覽任何路由（`/`、`/counter`、`/weather`）
@@ -8,6 +8,10 @@
 #### Scenario: Header 顯示應用名稱
 - **WHEN** 頁面載入完成
 - **THEN** Header 左側顯示品牌 Logo 圓圈（字母 "B"）與應用名稱文字
+
+#### Scenario: Logo 為可點擊按鈕
+- **WHEN** 使用者點擊 Header 左側的 Logo 圓圈
+- **THEN** 側邊欄切換展開/收合狀態（toggle）
 
 ### Requirement: 左側可折疊側邊欄導覽
 應用程式 SHALL 提供左側固定寬度的側邊欄，包含可折疊的群組導覽項目。
