@@ -1,4 +1,4 @@
-using BlazorN10WasmLab.Shared.Contracts;
+using BlazorN10WasmLab.Contracts;
 using ProtoBuf.Grpc;
 
 namespace BlazorN10WasmLab.Services;

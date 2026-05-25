@@ -1,6 +1,5 @@
 using BlazorN10WasmLab.Client.Services;
-using BlazorN10WasmLab.Shared;
-using BlazorN10WasmLab.Shared.Contracts;
+using BlazorN10WasmLab.Contracts;
 using Grpc.Net.Client;
 using Grpc.Net.Client.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

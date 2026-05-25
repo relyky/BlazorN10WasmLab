@@ -1,7 +1,7 @@
 <Solution>
   <Project Path="BlazorN10WasmLab.AppHost/BlazorN10WasmLab.AppHost.csproj" />
   <Project Path="BlazorN10WasmLab.ServiceDefaults/BlazorN10WasmLab.ServiceDefaults.csproj" />
-  <Project Path="BlazorN10WasmLab.Shared/BlazorN10WasmLab.Shared.csproj" />
+  <Project Path="BlazorN10WasmLab.Contracts/BlazorN10WasmLab.Contracts.csproj" />
   <Project Path="BlazorN10WasmLab/BlazorN10WasmLab.Client/BlazorN10WasmLab.Client.csproj" />
   <Project Path="BlazorN10WasmLab/BlazorN10WasmLab/BlazorN10WasmLab.csproj" />
 </Solution>

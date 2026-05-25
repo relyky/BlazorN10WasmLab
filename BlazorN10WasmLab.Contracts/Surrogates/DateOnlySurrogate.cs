@@ -1,6 +1,6 @@
 using ProtoBuf;
 
-namespace BlazorN10WasmLab.Shared.Surrogates;
+namespace BlazorN10WasmLab.Contracts.Surrogates;
 
 [ProtoContract]
 public struct DateOnlySurrogate

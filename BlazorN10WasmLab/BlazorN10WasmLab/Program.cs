@@ -1,7 +1,7 @@
 using BlazorN10WasmLab.Client.Pages;
 using BlazorN10WasmLab.Components;
 using BlazorN10WasmLab.Services;
-using BlazorN10WasmLab.Shared;
+using BlazorN10WasmLab.Contracts;
 using ProtoBuf.Grpc.Server;
 
 GrpcTypeModelSetup.Register();

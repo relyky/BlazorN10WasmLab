@@ -1,7 +1,7 @@
-using BlazorN10WasmLab.Shared.Surrogates;
+using BlazorN10WasmLab.Contracts.Surrogates;
 using ProtoBuf.Meta;
 
-namespace BlazorN10WasmLab.Shared;
+namespace BlazorN10WasmLab.Contracts;
 
 public static class GrpcTypeModelSetup
 {

@@ -1,7 +1,7 @@
 using ProtoBuf.Grpc;
 using System.ServiceModel;
 
-namespace BlazorN10WasmLab.Shared.Contracts;
+namespace BlazorN10WasmLab.Contracts;
 
 [ServiceContract]
 public interface IWeatherService

@@ -1,6 +1,6 @@
 using ProtoBuf;
 
-namespace BlazorN10WasmLab.Shared.Contracts;
+namespace BlazorN10WasmLab.Contracts;
 
 [ProtoContract]
 public class WeatherForecast

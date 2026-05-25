@@ -22,6 +22,20 @@ dotnet build BlazorN10WasmLab.slnx
 dotnet restore BlazorN10WasmLab.slnx
 ```
 
+### Claude Code 快速啟動／停止
+
+開發時優先用 `/launch` 而非手動 `dotnet run`：
+
+| 指令 | 說明 |
+|---|---|
+| `/launch start` | 並行啟動 Tailwind CLI watch 與 `dotnet watch` (Aspire AppHost, Hot Reload)，自動開啟瀏覽器至首頁並截圖確認 |
+| `/launch stop` | 終止兩個背景 watch 程序、清除 session 暫存檔 |
+| `/launch`（無 args）| 自動偵測：未啟動則 start，已啟動則詢問是否 stop |
+
+`/launch start` 解決一個關鍵問題：`dotnet watch` 的 Hot Reload 路徑跳過 MSBuild，導致綁在 MSBuild target 上的 Tailwind CLI 不會重跑（新增 utility class 不會出現在 `wwwroot/app.css`）。並行 Tailwind watch 即時重生 CSS 補上這個落差。
+
+Session task ID 暫存於 `.claude/aspire-debug_session.tmp` 與 `.claude/tailwind-watch_session.tmp`；log 寫入 `.claude/tmp/{aspire-startup,tailwind-watch}.log`。
+
 **Development URLs** (direct run, no Aspire):
 - HTTP: `http://blazorn10wasmlab.dev.localhost:5158`
 - HTTPS: `https://blazorn10wasmlab.dev.localhost:7009`
@@ -34,7 +48,7 @@ dotnet restore BlazorN10WasmLab.slnx
 |---|---|
 | `BlazorN10WasmLab` | ASP.NET Core server host — serves the app, gRPC-Web endpoints |
 | `BlazorN10WasmLab.Client` | Blazor WebAssembly client — all pages and UI components run here in-browser |
-| `BlazorN10WasmLab.Shared` | gRPC 合約庫 — service interfaces, data models, protobuf setup |
+| `BlazorN10WasmLab.Contracts` | gRPC 合約庫 — service interfaces, data models, protobuf setup |
 | `BlazorN10WasmLab.AppHost` | .NET Aspire orchestrator — manages startup, dashboard, service discovery |
 | `BlazorN10WasmLab.ServiceDefaults` | Shared Aspire configuration — OpenTelemetry, health checks (`/health`, `/alive`), HTTP resilience |
 
@@ -46,13 +60,13 @@ The entire app uses **`InteractiveWebAssembly`** render mode globally (set in `A
 
 - `BlazorN10WasmLab/Program.cs` — gRPC-Web 設定（`AddCodeFirstGrpc`、`UseGrpcWeb`、`MapGrpcService`）、`GrpcTypeModelSetup.Register()`
 - `BlazorN10WasmLab.Client/Program.cs` — WASM bootstrap，`GrpcChannel` 建立與所有 gRPC service DI 注冊
-- `BlazorN10WasmLab.Shared/GrpcTypeModelSetup.cs` — `DateOnly` surrogate 初始化，Server 與 Client 啟動時各呼叫一次
+- `BlazorN10WasmLab.Contracts/GrpcTypeModelSetup.cs` — `DateOnly` surrogate 初始化，Server 與 Client 啟動時各呼叫一次
 
 ## gRPC-Web 通訊規則
 
 ### 新增 gRPC Service 的流程
 
-1. **Shared 專案**新增 interface（`[ServiceContract]`）與資料模型（`[ProtoContract]`）
+1. **Contracts 專案**新增 interface（`[ServiceContract]`）與資料模型（`[ProtoContract]`）
 2. **Server 專案**實作 interface，在 `Program.cs` 加 `app.MapGrpcService<T>().EnableGrpcWeb()`
 3. **Client 專案**新增具體 client 類別，在 `Program.cs` 注冊 `AddSingleton<IXxxService>(new XxxServiceClient(channel))`
 
@@ -64,7 +78,7 @@ The entire app uses **`InteractiveWebAssembly`** render mode globally (set in `A
 
 ### protobuf-net.Grpc 命名規則（Client 端 method descriptor 需對應）
 
-- **Service name**：`{Namespace}.{TypeName去掉開頭I}` → `IWeatherService` in `BlazorN10WasmLab.Shared.Contracts` → `BlazorN10WasmLab.Shared.Contracts.WeatherService`
+- **Service name**：`{Namespace}.{TypeName去掉開頭I}` → `IWeatherService` in `BlazorN10WasmLab.Contracts` → `BlazorN10WasmLab.Contracts.WeatherService`
 - **Method name**：去掉 `Async` 後綴 → `GetForecastsAsync` → `GetForecasts`
 
 ### DateOnly 序列化

@@ -1,4 +1,4 @@
-using BlazorN10WasmLab.Shared.Contracts;
+using BlazorN10WasmLab.Contracts;
 using Grpc.Core;
 using Grpc.Net.Client;
 using ProtoBuf;
@@ -12,7 +12,7 @@ public sealed class WeatherServiceClient : IWeatherService
 {
     // protobuf-net.Grpc 的 service 命名規則：
     //   type.Namespace + "." + type.Name（介面去掉開頭 'I'）
-    private const string ServiceName = "BlazorN10WasmLab.Shared.Contracts.WeatherService";
+    private const string ServiceName = "BlazorN10WasmLab.Contracts.WeatherService";
 
     private static readonly Marshaller<GrpcEmpty> EmptyMarshaller = CreateMarshaller<GrpcEmpty>();
     private static readonly Marshaller<WeatherForecastReply> ReplyMarshaller = CreateMarshaller<WeatherForecastReply>();
