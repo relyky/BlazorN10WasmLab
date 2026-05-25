@@ -30,4 +30,4 @@
 
 ## 5. 提交
 
-- [ ] 5.1 以單一 commit 提交所有實作 + OpenSpec artifacts，commit message 採用 `Refactor:` 或 `Implement:` 前綴並說明 viewport seam 抽出 + resize bug 修復
+- [x] 5.1 以單一 commit 提交所有實作 + OpenSpec artifacts，commit message 採用 `Refactor:` 或 `Implement:` 前綴並說明 viewport seam 抽出 + resize bug 修復
