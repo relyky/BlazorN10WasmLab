@@ -4,47 +4,57 @@
 
 <PageTitle>Weather</PageTitle>
 
-<h1>Weather</h1>
+<h1 class="text-4xl font-bold text-[var(--color-primary)] my-4">Weather</h1>
 
-<p>This component demonstrates showing data via gRPC-Web.</p>
+<p class="text-base text-gray-500 mb-4">This component demonstrates showing data via gRPC-Web.</p>
 
-<div class="mb-3 d-flex gap-2">
-    <button class="btn btn-primary" @onclick="LoadUnaryAsync" disabled="@isLoading">
+<div class="flex gap-2 mb-4">
+    <button class="bg-[var(--color-primary)] text-[var(--color-primary-fg)] rounded-md px-5 py-2 font-medium cursor-pointer shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            @onclick="LoadUnaryAsync" disabled="@isLoading">
         刷新（Unary）
     </button>
-    <button class="btn btn-secondary" @onclick="LoadStreamingAsync" disabled="@isLoading">
+    <button class="border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-[var(--color-primary-fg)] rounded-md px-5 py-2 font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            @onclick="LoadStreamingAsync" disabled="@isLoading">
         刷新（Streaming）
     </button>
 </div>
 
-@if (isLoading && forecasts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else if (forecasts != null)
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th aria-label="Temperature in Celsius">Temp. (C)</th>
-                <th aria-label="Temperature in Fahrenheit">Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
+<table class="min-w-full border-collapse">
+    <thead class="bg-gray-50 border-b-2 border-gray-300">
+        <tr>
+            <th class="text-left px-4 py-2 font-semibold text-gray-700">Date</th>
+            <th class="text-left px-4 py-2 font-semibold text-gray-700" aria-label="Temperature in Celsius">Temp. (C)</th>
+            <th class="text-left px-4 py-2 font-semibold text-gray-700" aria-label="Temperature in Fahrenheit">Temp. (F)</th>
+            <th class="text-left px-4 py-2 font-semibold text-gray-700">Summary</th>
+        </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200">
+        @if (forecasts == null || (isLoading && forecasts.Count == 0))
+        {
+            @for (var i = 0; i < 5; i++)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td class="px-4 py-2"><div class="h-4 w-24 bg-[var(--color-primary-light)]/20 rounded animate-pulse"></div></td>
+                    <td class="px-4 py-2"><div class="h-4 w-12 bg-[var(--color-primary-light)]/20 rounded animate-pulse"></div></td>
+                    <td class="px-4 py-2"><div class="h-4 w-12 bg-[var(--color-primary-light)]/20 rounded animate-pulse"></div></td>
+                    <td class="px-4 py-2"><div class="h-4 w-32 bg-[var(--color-primary-light)]/20 rounded animate-pulse"></div></td>
                 </tr>
             }
-        </tbody>
-    </table>
-}
+        }
+        else
+        {
+            @foreach (var forecast in forecasts)
+            {
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2">@forecast.Date.ToShortDateString()</td>
+                    <td class="px-4 py-2">@forecast.TemperatureC</td>
+                    <td class="px-4 py-2">@forecast.TemperatureF</td>
+                    <td class="px-4 py-2">@forecast.Summary</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
 
 @code {
     private List<WeatherForecast>? forecasts;
