@@ -1,17 +1,4 @@
-### Requirement: 頂部品牌 Header 常駐顯示
-應用程式 SHALL 在所有頁面頂部顯示一個固定高度的品牌 Header Bar，包含應用名稱與品牌識別色（primary color `#c2185b`）。Header 左側的 Logo 圓圈 SHALL 為可點擊按鈕，用於切換側邊欄展開/收合狀態。
-
-#### Scenario: Header 出現在所有頁面
-- **WHEN** 使用者瀏覽任何路由（`/`、`/counter`、`/weather`）
-- **THEN** 頂部 Header Bar 始終可見，不隨頁面內容滾動消失
-
-#### Scenario: Header 顯示應用名稱
-- **WHEN** 頁面載入完成
-- **THEN** Header 左側顯示品牌 Logo 圓圈（字母 "B"）與應用名稱文字
-
-#### Scenario: Logo 為可點擊按鈕
-- **WHEN** 使用者點擊 Header 左側的 Logo 圓圈
-- **THEN** 側邊欄切換展開/收合狀態（toggle）
+## MODIFIED Requirements
 
 ### Requirement: 左側可折疊側邊欄導覽
 應用程式 SHALL 提供左側固定寬度的側邊欄，包含可折疊的群組導覽項目。群組折疊與展開 SHALL 以平滑動畫呈現（非瞬間 toggle）。
@@ -39,14 +26,3 @@
 #### Scenario: Playground 頁面高亮
 - **WHEN** 使用者位於 `/playground` 頁面
 - **THEN** 側邊欄中 Playground 連結呈現 active 高亮樣式
-
-### Requirement: 品牌色系整合
-應用程式 SHALL 使用 Tailwind v4 `@theme` 定義品牌色系，使 `bg-primary`、`text-primary` 等 utility class 全域可用。
-
-#### Scenario: 品牌色應用於 Header
-- **WHEN** 任何頁面渲染完成
-- **THEN** 頂部 Header 背景色為 `--color-primary`（`#c2185b`），文字為白色
-
-#### Scenario: 品牌色應用於側邊欄 active 狀態
-- **WHEN** 目前頁面對應的導覽項目為 active
-- **THEN** 該項目的 active 背景或文字顏色使用品牌色
