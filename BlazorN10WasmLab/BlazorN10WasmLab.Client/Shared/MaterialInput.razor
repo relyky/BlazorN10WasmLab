@@ -1,0 +1,38 @@
+@* 此元件未整合 EditContext，在 <EditForm> 內請改用 <InputText>。 *@
+
+<div class="relative w-full @Class mt-6">
+    <input type="@Type"
+           id="@Id"
+           placeholder=" "
+           @bind-value="CurrentValue"
+           @bind-value:event="oninput"
+           class="peer w-full bg-transparent text-slate-700 text-sm border-b border-slate-200 focus:border-[var(--color-primary)] pl-0 pr-3 py-2 transition-all duration-300 outline-none" />
+
+    <label for="@Id"
+           class="absolute left-0 top-2 text-slate-400 text-sm transition-all duration-300 origin-left pointer-events-none
+                  peer-focus:-top-3.5 peer-focus:text-xs peer-focus:text-[var(--color-primary)]
+                  peer-[:not(:placeholder-shown)]:-top-3.5 peer-[:not(:placeholder-shown)]:text-xs">
+        @Label
+    </label>
+</div>
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    [Parameter] public string Label { get; set; } = "欄位名稱";
+    [Parameter] public string Type { get; set; } = "text";
+    [Parameter] public string Class { get; set; } = "max-w-sm";
+
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Id ??= $"mi-{Guid.NewGuid():N}";
+    }
+
+    private string? CurrentValue
+    {
+        get => Value;
+        set => ValueChanged.InvokeAsync(value);
+    }
+}

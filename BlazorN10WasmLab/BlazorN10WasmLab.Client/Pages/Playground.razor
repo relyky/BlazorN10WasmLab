@@ -1,0 +1,22 @@
+@page "/playground"
+
+<PageTitle>Playground</PageTitle>
+
+<h1 class="text-4xl font-bold text-[var(--color-primary)] my-4">Playground</h1>
+
+<div class="space-y-8">
+    <section>
+        <MaterialInput @bind-Value="_name" Label="姓名" />
+        <p class="mt-2 text-sm text-slate-500">目前值：@_name</p>
+    </section>
+
+    <section>
+        <MaterialInput @bind-Value="_email" Label="Email" Type="email" />
+        <p class="mt-2 text-sm text-slate-500">目前值：@_email</p>
+    </section>
+</div>
+
+@code {
+    private string? _name;
+    private string? _email;
+}

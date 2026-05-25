@@ -28,6 +28,14 @@
 - **WHEN** 使用者位於 `/counter` 頁面
 - **THEN** 側邊欄中 Counter 連結呈現 active 高亮樣式
 
+#### Scenario: 群組包含 Playground 連結
+- **WHEN** 「功能展示」群組展開
+- **THEN** 子導覽項目 SHALL 包含「Playground」連結，href 為 `playground`，並使用與其他連結相同的 NavLink + SVG icon 格式
+
+#### Scenario: Playground 頁面高亮
+- **WHEN** 使用者位於 `/playground` 頁面
+- **THEN** 側邊欄中 Playground 連結呈現 active 高亮樣式
+
 ### Requirement: 品牌色系整合
 應用程式 SHALL 使用 Tailwind v4 `@theme` 定義品牌色系，使 `bg-primary`、`text-primary` 等 utility class 全域可用。
 
