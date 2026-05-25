@@ -30,11 +30,11 @@ dotnet restore BlazorN10WasmLab.slnx
 |---|---|
 | `/launch start` | 並行啟動 Tailwind CLI watch 與 `dotnet watch` (Aspire AppHost, Hot Reload)，自動開啟瀏覽器至首頁並截圖確認 |
 | `/launch stop` | 終止兩個背景 watch 程序、清除 session 暫存檔 |
-| `/launch`（無 args）| 自動偵測：未啟動則 start，已啟動則詢問是否 stop |
+| `/launch`（無 args）| 報錯：必須指定 start 或 stop |
 
 `/launch start` 解決一個關鍵問題：`dotnet watch` 的 Hot Reload 路徑跳過 MSBuild，導致綁在 MSBuild target 上的 Tailwind CLI 不會重跑（新增 utility class 不會出現在 `wwwroot/app.css`）。並行 Tailwind watch 即時重生 CSS 補上這個落差。
 
-Session task ID 暫存於 `.claude/aspire-debug_session.tmp` 與 `.claude/tailwind-watch_session.tmp`；log 寫入 `.claude/tmp/{aspire-startup,tailwind-watch}.log`。
+PID 暫存於 `.claude/tmp/{aspire,tailwind}.pid`；log 寫入 `.claude/tmp/{aspire-startup,tailwind-watch}.log`。
 
 **Development URLs** (direct run, no Aspire):
 - HTTP: `http://blazorn10wasmlab.dev.localhost:5158`
