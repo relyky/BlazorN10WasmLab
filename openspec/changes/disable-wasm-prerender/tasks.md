@@ -16,4 +16,4 @@
 
 ## 3. 提交
 
-- [ ] 3.1 以單一 commit 提交 `App.razor` 變更，commit message 採用 `Fix:` 前綴並說明修復 Weather prerender DI 例外
+- [x] 3.1 以單一 commit 提交 `App.razor` 變更，commit message 採用 `Fix:` 前綴並說明修復 Weather prerender DI 例外
