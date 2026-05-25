@@ -1,5 +1,6 @@
 @inherits LayoutComponentBase
-@inject IJSRuntime JS
+@inject IViewportBreakpoint Viewport
+@implements IDisposable
 
 <div class="flex flex-col h-screen">
     <header class="flex items-center shrink-0 bg-primary text-primary-fg px-4 py-3 shadow-md">
@@ -56,24 +57,31 @@
     {
         if (firstRender)
         {
-            var width = await JS.InvokeAsync<int>("eval", "window.innerWidth");
-            _sidebarOpen = width >= 768;
+            await Viewport.EnsureInitializedAsync();
+            _sidebarOpen = !Viewport.IsMobile;
             _initialized = true;
+            Viewport.OnChanged += HandleViewportChanged;
             StateHasChanged();
         }
+    }
+
+    private void HandleViewportChanged()
+    {
+        _sidebarOpen = !Viewport.IsMobile;
+        InvokeAsync(StateHasChanged);
     }
 
     private void ToggleSidebar() => _sidebarOpen = !_sidebarOpen;
 
     private void CloseSidebar() => _sidebarOpen = false;
 
-    private async Task CloseSidebarIfMobile()
+    private void CloseSidebarIfMobile()
     {
-        var width = await JS.InvokeAsync<int>("eval", "window.innerWidth");
-        if (width < 768)
+        if (Viewport.IsMobile)
         {
             _sidebarOpen = false;
-            StateHasChanged();
         }
     }
+
+    public void Dispose() => Viewport.OnChanged -= HandleViewportChanged;
 }
