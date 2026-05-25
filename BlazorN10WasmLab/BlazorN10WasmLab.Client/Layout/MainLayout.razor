@@ -34,10 +34,23 @@
 
 @code {
     private bool _sidebarOpen = false;
+    private bool _initialized = false;
 
-    private string SidebarClass => _sidebarOpen
-        ? "fixed top-16 bottom-0 left-0 z-40 w-60 bg-white border-r border-gray-200 overflow-y-auto shadow-lg transition-transform duration-200 translate-x-0 md:static md:z-auto md:shadow-none md:shrink-0"
-        : "fixed top-16 bottom-0 left-0 z-40 w-60 bg-white border-r border-gray-200 overflow-y-auto shadow-lg transition-transform duration-200 -translate-x-full md:static md:z-auto md:shadow-none md:shrink-0 md:hidden";
+    private const string SidebarBase = "fixed top-16 bottom-0 left-0 z-40 w-60 bg-white border-r border-gray-200 overflow-y-auto shadow-lg md:static md:z-auto md:shadow-none md:shrink-0";
+    private const string SidebarOpen = "translate-x-0 md:ml-0";
+    private const string SidebarClosed = "-translate-x-full md:-ml-60";
+    private const string SidebarTransition = "transition-[translate,margin] duration-200";
+
+    private string SidebarClass
+    {
+        get
+        {
+            var state = _sidebarOpen ? SidebarOpen : SidebarClosed;
+            return _initialized
+                ? $"{SidebarBase} {SidebarTransition} {state}"
+                : $"{SidebarBase} {state}";
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -45,6 +58,7 @@
         {
             var width = await JS.InvokeAsync<int>("eval", "window.innerWidth");
             _sidebarOpen = width >= 768;
+            _initialized = true;
             StateHasChanged();
         }
     }
