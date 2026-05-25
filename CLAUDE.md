@@ -136,3 +136,35 @@ Invoke-WebRequest -Uri "https://github.com/tailwindlabs/tailwindcss/releases/lat
 1. 先用 Tailwind utility class 直接修飾元素
 2. 需要 `::deep`、CSS selector 組合、或超過 5 個 utility 時，改用 scoped CSS
 3. 只有 Blazor 框架相關樣式才寫進 `Styles/app.css`
+
+### Tailwind v4 動畫地雷：`translate-x-*` 不是 `transform`
+
+Tailwind v4 的位移類 utility 使用 CSS individual transform properties：
+
+```css
+.-translate-x-full { translate: -100% 0; }   /* property 是 translate */
+.rotate-90        { rotate: 90deg; }         /* property 是 rotate */
+.scale-110        { scale: 1.1; }            /* property 是 scale */
+```
+
+不是傳統的 `transform: translateX(...)`。所以 transition 要這樣寫：
+
+```razor
+<!-- ✗ 錯：transform 不會涵蓋 translate property -->
+<div class="-translate-x-full transition-transform duration-200">
+
+<!-- ✓ 對：直接 transition translate -->
+<div class="-translate-x-full transition-[translate] duration-200">
+```
+
+多屬性同步動畫用 arbitrary value：`transition-[translate,margin]`、`transition-[rotate,scale]`。要動 transform 寫法的對應屬性就點明哪個，不要寫 `transform`。
+
+## OpenSpec 工作流
+
+本專案使用 OpenSpec 管理規格與變更：
+
+- `openspec/specs/<capability>/spec.md` — 各能力當前規格（requirements + scenarios）
+- `openspec/changes/<name>/` — 進行中的變更（含 proposal/design/specs/tasks）
+- `openspec/changes/archive/YYYY-MM-DD-<name>/` — 已完成歸檔
+
+常用斜線指令：`/opsx:propose`（提案）、`/opsx:apply`（實作）、`/opsx:verify`（驗證）、`/opsx:archive`（歸檔同步 spec）。修改既有能力的 requirement 時，delta spec 走 `## MODIFIED Requirements` + 完整貼上整個 requirement 區塊（保留所有 scenarios 並編輯）。
