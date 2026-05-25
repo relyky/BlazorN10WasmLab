@@ -10,12 +10,17 @@
     <link rel="stylesheet" href="@Assets["BlazorN10WasmLab.styles.css"]" />
     <ImportMap />
     <link rel="icon" type="image/png" href="favicon.png" />
-    <HeadOutlet @rendermode="InteractiveWebAssembly" />
+    <HeadOutlet @rendermode="WasmNoPrerender" />
 </head>
 
 <body>
-    <Routes @rendermode="InteractiveWebAssembly" />
+    <Routes @rendermode="WasmNoPrerender" />
     <script src="@Assets["_framework/blazor.web.js"]"></script>
 </body>
 
 </html>
+
+@code {
+    // Prerender 關閉：避免 server 嘗試解析只在 client DI 註冊的服務（如 IWeatherService）
+    private static readonly InteractiveWebAssemblyRenderMode WasmNoPrerender = new(prerender: false);
+}
