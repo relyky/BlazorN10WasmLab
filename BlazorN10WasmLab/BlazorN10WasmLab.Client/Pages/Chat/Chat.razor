@@ -1,0 +1,106 @@
+@page "/chat"
+@inject IChatService ChatService
+@implements IDisposable
+
+<PageTitle>Chat</PageTitle>
+
+<ChatHeader OnNewChat="@ResetConversationAsync" />
+
+<ChatMessageList Messages="@messages" InProgressMessage="@currentResponseMessage">
+    <NoMessagesContent>
+        <div>To get started, try asking about these example documents. You can replace these with your own data and replace this message.</div>
+        <ChatCitation File="Example_Emergency_Survival_Kit.pdf"/>
+        <ChatCitation File="Example_GPS_Watch.md"/>
+    </NoMessagesContent>
+</ChatMessageList>
+
+<div class="chat-container">
+    <ChatSuggestions OnSelected="@AddUserMessageAsync" @ref="@chatSuggestions" />
+    <ChatInput OnSend="@AddUserMessageAsync" @ref="@chatInput" />
+</div>
+
+@code {
+    private readonly List<ChatMessageModel> messages = new();
+    private CancellationTokenSource? currentResponseCancellation;
+    private ChatMessageModel? currentResponseMessage;
+    private ChatInput? chatInput;
+    private ChatSuggestions? chatSuggestions;
+
+    // server 端對話狀態：鏈接上一回合的 response id（由串流的 ResponseId 事件回傳）；New chat 時清除。
+    private string? previousResponseId;
+
+    private async Task AddUserMessageAsync(ChatMessageModel userMessage)
+    {
+        CancelAnyCurrentResponse();
+
+        messages.Add(userMessage);
+        chatSuggestions?.Clear();
+        await chatInput!.FocusAsync();
+
+        currentResponseMessage = ChatMessageModel.Assistant();
+        currentResponseCancellation = new();
+        try
+        {
+            var request = new ChatStreamRequest
+            {
+                UserInput = userMessage.Text,
+                PreviousResponseId = previousResponseId,
+            };
+
+            await foreach (var reply in ChatService.StreamReplyAsync(
+                request,
+                new ProtoBuf.Grpc.CallContext(new Grpc.Core.CallOptions(cancellationToken: currentResponseCancellation.Token))))
+            {
+                switch (reply.Kind)
+                {
+                    case ChatEventKind.TextDelta:
+                        currentResponseMessage.Text += reply.TextDelta ?? string.Empty;
+                        break;
+                    case ChatEventKind.ToolCallStarted:
+                        currentResponseMessage.ToolCalls.Add(new ToolCallMarker
+                        {
+                            ToolName = reply.ToolName ?? "",
+                            SearchPhrase = reply.SearchPhrase,
+                            FilenameFilter = reply.FilenameFilter,
+                        });
+                        break;
+                    case ChatEventKind.ResponseId:
+                        previousResponseId = reply.ResponseId;
+                        break;
+                }
+                ChatMessageItem.NotifyChanged(currentResponseMessage);
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+
+        messages.Add(currentResponseMessage);
+        currentResponseMessage = null;
+        chatSuggestions?.Update(messages);
+    }
+
+    private void CancelAnyCurrentResponse()
+    {
+        if (currentResponseMessage is not null)
+        {
+            messages.Add(currentResponseMessage);
+        }
+
+        currentResponseCancellation?.Cancel();
+        currentResponseMessage = null;
+    }
+
+    private async Task ResetConversationAsync()
+    {
+        CancelAnyCurrentResponse();
+        messages.Clear();
+        previousResponseId = null;
+        chatSuggestions?.Clear();
+        await chatInput!.FocusAsync();
+    }
+
+    public void Dispose()
+        => currentResponseCancellation?.Cancel();
+}

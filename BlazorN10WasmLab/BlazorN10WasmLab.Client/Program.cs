@@ -16,6 +16,7 @@ var channel = GrpcChannel.ForAddress(
     });
 
 builder.Services.AddSingleton<IWeatherService>(new WeatherServiceClient(channel));
+builder.Services.AddSingleton<IChatService>(new ChatServiceClient(channel));
 builder.Services.AddSingleton<IViewportBreakpoint, ViewportBreakpoint>();
 
 await builder.Build().RunAsync();
