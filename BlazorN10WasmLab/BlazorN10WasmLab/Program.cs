@@ -73,5 +73,6 @@ app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(BlazorN10WasmLab.Client._Imports).Assembly);
 
 app.MapGrpcService<WeatherService>().EnableGrpcWeb();
+app.MapGrpcService<ChatService>().EnableGrpcWeb();
 
 app.Run();

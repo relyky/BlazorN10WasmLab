@@ -1,0 +1,63 @@
+@inject IChatService ChatService
+
+@if (suggestions is not null)
+{
+    <div class="page-width suggestions">
+        @foreach (var suggestion in suggestions)
+        {
+            <button class="btn-subtle" @onclick="@(() => AddSuggestionAsync(suggestion))">
+                @suggestion
+            </button>
+        }
+    </div>
+}
+
+@code {
+    private string[]? suggestions;
+    private CancellationTokenSource? cancellation;
+
+    [Parameter]
+    public EventCallback<ChatMessageModel> OnSelected { get; set; }
+
+    public void Clear()
+    {
+        suggestions = null;
+        cancellation?.Cancel();
+    }
+
+    public void Update(IReadOnlyList<ChatMessageModel> messages)
+    {
+        // Runs in the background and handles its own cancellation/errors
+        _ = UpdateSuggestionsAsync(messages);
+    }
+
+    private async Task UpdateSuggestionsAsync(IReadOnlyList<ChatMessageModel> messages)
+    {
+        cancellation?.Cancel();
+        cancellation = new CancellationTokenSource();
+
+        try
+        {
+            // 脈絡縮減留前端（ChatContextReducer 純函式，已測）；後端建議提示詞在 Server。
+            var contextLines = ChatContextReducer.Reduce(
+                messages.Select(m => (m.Role.ToString(), m.Text)),
+                take: 5);
+
+            var request = new SuggestRequest { ContextLines = [.. contextLines] };
+            var reply = await ChatService.SuggestAsync(
+                request,
+                new ProtoBuf.Grpc.CallContext(new Grpc.Core.CallOptions(cancellationToken: cancellation.Token)));
+
+            suggestions = reply.Suggestions.Count > 0 ? [.. reply.Suggestions] : null;
+            StateHasChanged();
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
+    private async Task AddSuggestionAsync(string text)
+    {
+        await OnSelected.InvokeAsync(ChatMessageModel.User(text));
+    }
+}
