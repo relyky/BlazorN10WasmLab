@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- 升級 Aspire 間接帶入的 StreamJsonRpc，使其改用安全的 MessagePack 2.5.302+ (避開 NU1903, GHSA-hv8m-jj95-wg3x) -->
+    <PackageReference Include="StreamJsonRpc" Version="2.25.29" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BlazorN10WasmLab\BlazorN10WasmLab\BlazorN10WasmLab.csproj" />
   </ItemGroup>
 
