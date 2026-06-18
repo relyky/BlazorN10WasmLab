@@ -4,4 +4,5 @@
   <Project Path="BlazorN10WasmLab.Contracts/BlazorN10WasmLab.Contracts.csproj" />
   <Project Path="BlazorN10WasmLab/BlazorN10WasmLab.Client/BlazorN10WasmLab.Client.csproj" />
   <Project Path="BlazorN10WasmLab/BlazorN10WasmLab/BlazorN10WasmLab.csproj" />
+  <Project Path="BlazorN10WasmLab.Tests/BlazorN10WasmLab.Tests.csproj" />
 </Solution>
